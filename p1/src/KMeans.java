@@ -36,9 +36,6 @@ public class KMeans {
 		 //Array for holding the difference between a centroid and an instance.
 		 double[][]differences = new double[centroids.length][instances[0].length];
 		 
-		 double average;
-		 double distance;
-
 		 for (int i = 0; i < instances.length; i++){
 			 for(int j = 0; j < centroids.length; j++){
 				 for (int k = 0; k < centroids[j].length; k++){
