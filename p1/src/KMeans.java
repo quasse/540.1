@@ -32,10 +32,10 @@ public class KMeans {
 		 //Array for holding the respective distances from an instance to a 
 		 //centroid.
 		 double[][] distances = new double[centroids.length][1];
-		 
+
 		 //Array for holding the difference between a centroid and an instance.
 		 double[][]differences = new double[centroids.length][instances[0].length];
-		 
+
 		 /*
 		  * Iterates through each instance, storing the difference between an 
 		  * instance's feature location and the centroid's feature location
@@ -54,7 +54,7 @@ public class KMeans {
 					 differences[j][k] = centroids[j][k] - instances[i][k];
 				 }//end for
 			 }//end for
-			 
+
 			 //Iterates through the assignments array, placing the assigned
 			 //instance in the first empty space of whatever row the centroid 
 			 //corresponds to.
@@ -79,29 +79,29 @@ public class KMeans {
 
 		 return centroids;
 	 }
-	 
+
 	 /*
 	  * Returns whatever centroid is closest to the instance.
 	  * The centroid is indicated by its row.
 	  */
 	 private int getClosest(double[][] differences){
-		 
+
 		 //Array to store the distances between each centroid and instance
 		 double[] totalDistance = new double[differences.length];
-		 
+
 		 //Will indicate which element of totalDistance is the smallest
 		 int indicator = 0;
-		 
+
 		 //Iterates through differences[][], adding each difference to the next
 		 for (int i = 0; i < differences.length; i++){
 			 for (int j = 0; j < differences[i].length; j++){
 				 totalDistance[i] = totalDistance[i] + differences[i][j];
 			 }
 		 }
-		 
-		 
+
+
 		 double min = totalDistance[0];
-		 
+
 		 //Sees which element in totalDistance is the smallest
 		 for (int i = 1; i < totalDistance.length; i++){
 			 if (totalDistance[i] < min ){
@@ -110,19 +110,54 @@ public class KMeans {
 		 }//end for
 		 return indicator;
 	 }//end method
-	 
+
 	 /*
 	  * Searhces through the assignments array and looks to see if any of the 
 	  * rows are empty.
 	  */
 	 private void findOrphans(double assignments[][], double centroids[][],
 			 double instances[][]){
-		 
+
+		 boolean hasOrphans = false;
+		 int orphanedCentroid = 0;
+		 double distance = 0;
+		 double max = 0;
+		 double instance = 0;
+
+
 		 for (int i = 0; i < assignments.length; i ++){
 			 if (assignments[i][0] == 0){
-				 //to do
-			 }
-		 }
-		 
-	 }
+				 hasOrphans = true;
+				 orphanedCentroid = i;
+			 }//end if 
+		 }//end for
+
+		 if (hasOrphans){
+			 
+			 //Searches through each instance, comparing the length between it
+			 //and the centroid
+			 for (int i = 0; i < instances.length; i++){
+				 for (int j = 0; j < instances[i].length; j++){
+					 distance = centroids[orphanedCentroid][j] - instances[i][j];
+				 }//end for
+				 
+				 //checks if the distance between this instance and the centroid
+				 //is the greatest
+				 if (distance > max){
+					 max = distance;
+					 instance = i;
+				 }//end if
+				 
+				 //resets the distance
+				 distance = 0;
+			 }//end for
+
+			 //Assigns the instance to the Centroid.
+			 assignments[orphanedCentroid][0] = instance;
+			 
+			 //Somehow need to get rid of the instance in the centroid it 
+			 //used to be in.
+		 }//end if
+
+	 }//end findOrphans
 }
