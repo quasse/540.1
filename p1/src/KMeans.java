@@ -10,7 +10,6 @@ public class KMeans {
 
 	public KMeansResult cluster(double[][] centroids, double[][] instances,
 			double threshold) {
-		/* ... YOUR CODE GOES HERE ... */
 
 		//changes the centroid location until the threshold is reached.
 		while(distortion > threshold){
@@ -28,10 +27,6 @@ public class KMeans {
 		 //Each row represents a centroid.
 		 //Each column represents a row in instances[][].
 		 double[][] assignments = new double[centroids.length][instances.length];
-
-		 //Array for holding the respective distances from an instance to a 
-		 //centroid.
-		 double[][] distances = new double[centroids.length][1];
 
 		 //Array for holding the difference between a centroid and an instance.
 		 double[][]differences = new double[centroids.length][instances[0].length];
@@ -62,11 +57,20 @@ public class KMeans {
 			 for (int l = 0; l < assignments[centroidAssignment].length; l++){
 				 if (assignments[centroidAssignment][l] == 0){
 					 assignments[centroidAssignment][l] = i;
-				 }
-			 }
+				 }//end if
+			 }//end for
 		 }//end for
+		 
 		 findOrphans(assignments, centroids, instances);
 		 moveCentroids(centroids, assignments);
+		 
+		 //Cleans assignments for future use
+		 for(int i = 0; i < assignments.length; i++){
+			 for (int j = 0; j < assignments[i].length; j++){
+				 assignments[i][j] = 0;
+			 }
+		 }
+		 
 		 return centroids;
 	 }//end method
 
@@ -133,30 +137,60 @@ public class KMeans {
 		 }//end for
 
 		 if (hasOrphans){
-			 
+
 			 //Searches through each instance, comparing the length between it
 			 //and the centroid
 			 for (int i = 0; i < instances.length; i++){
 				 for (int j = 0; j < instances[i].length; j++){
 					 distance = centroids[orphanedCentroid][j] - instances[i][j];
 				 }//end for
-				 
+
 				 //checks if the distance between this instance and the centroid
 				 //is the greatest
 				 if (distance > max){
 					 max = distance;
 					 instance = i;
 				 }//end if
-				 
+
 				 //resets the distance
 				 distance = 0;
 			 }//end for
 
 			 //Assigns the instance to the Centroid.
 			 assignments[orphanedCentroid][0] = instance;
-			 
-			 //Somehow need to get rid of the instance in the centroid it 
-			 //used to be in.
+
+			 /*
+			  * Searches assignments for the instance we just added to the 
+			  * orphaned centroid, deleting that instance from the centroid
+			  * it previously belonged to.
+			  */
+			 for (int i = 0; i < assignments.length; i ++){
+
+				 //checks to see if the centroid we are looking at is the one
+				 //we just put somethign in
+				 if (assignments[i][0] == instance){
+					 i++;
+				 }//end if
+
+				 //
+				 for (int j = 0; j < assignments[i].length; j ++){
+					 if (assignments[i][j] == instance){
+
+						 //checks to see if the reassigned instance is the last
+						 //element in assignments[i].
+						 if (j == assignments[i].length -1){
+							 assignments[i][j] = 0;
+						 }//end if 
+
+						 //Shifts all further elements in assignments[i] one 
+						 //position to the left
+						 for (int k = j; k < assignments[i].length-1; k++){
+							 assignments[i][k] = assignments[i][k+1];
+						 }//end for
+						 return;
+					 }//end if
+				 }//end for
+			 }//end if
 		 }//end if
 
 	 }//end findOrphans
