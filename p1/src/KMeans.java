@@ -30,6 +30,8 @@ public class KMeans {
 		 //Each row represents a centroid.
 		 //Each column represents a row in instances[][].
 		 int[][] assignments = new int[centroids.length][instances.length];
+		 int[] nextFreeAssignment = new int[centroids.length];
+		 int assignmentLocation = 0;
 
 		 //Array for holding the difference between a centroid and an instance.
 		 double[][]differences = new double[centroids.length][instances[0].length];
@@ -38,17 +40,12 @@ public class KMeans {
 				 for (int j = 0; j < centroids[i].length; j++){
 					 differences[i][j] = centroids[i][j] - instances[h][j];
 				 }
+				 
 				 int closestCentroid = getClosest(differences);
-				 for (int k = 0; k < assignments[closestCentroid].length; k++){
-					 if (k == 0 && assignments[closestCentroid][0] == 0){
-						 assignments[closestCentroid][k] = h;
-						 System.out.println("yes");
-					 }
-					 if (k > 1){
-						 assignments[closestCentroid][k] = h;
-						 System.out.println("no");
-					 }
-				 }
+
+				 assignments
+				 [closestCentroid][nextFreeAssignment[assignmentLocation++]] = h;
+
 			 }
 
 		 }
