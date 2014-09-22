@@ -39,14 +39,13 @@ public class KMeans {
 			 for(int i = 0; i < centroids.length; i++){
 				 for (int j = 0; j < centroids[i].length; j++){
 					 differences[i][j] = centroids[i][j] - instances[h][j];
-				 }
-				 
-				 int closestCentroid = getClosest(differences);
-
-				 assignments
-				 [closestCentroid][nextFreeAssignment[assignmentLocation++]] = h;
-
+				 }		 
 			 }
+			 
+			 int closestCentroid = getClosest(differences);
+
+			 assignments
+			 [closestCentroid][nextFreeAssignment[assignmentLocation++]] = h;
 
 		 }
 
