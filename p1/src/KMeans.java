@@ -33,68 +33,27 @@ public class KMeans {
 
 		 //Array for holding the difference between a centroid and an instance.
 		 double[][]differences = new double[centroids.length][instances[0].length];
-
-
-
-
-
-
 		 for(int h = 0; h < instances.length; h++){
 			 for(int i = 0; i < centroids.length; i++){
 				 for (int j = 0; j < centroids[i].length; j++){
 					 differences[i][j] = centroids[i][j] - instances[h][j];
-					// System.out.print(differences[i][j] + " XXXXX ");
 				 }
-				// System.out.println();
-			 }
-			 int closestCentroid = getClosest(differences);
-			 for (int k = 0; k < assignments[closestCentroid].length; k++){
-				 if (assignments[closestCentroid][k] != 0){
-					 assignments[closestCentroid][k] = 0;
+				 int closestCentroid = getClosest(differences);
+				 for (int k = 0; k < assignments[closestCentroid].length; k++){
+					 if (k == 0 && assignments[closestCentroid][0] == 0){
+						 assignments[closestCentroid][k] = h;
+						 System.out.println("yes");
+					 }
+					 if (k > 1){
+						 assignments[closestCentroid][k] = h;
+						 System.out.println("no");
+					 }
 				 }
 			 }
+
 		 }
 
-
-
-
-
-
-
-
-		 /*
-		  * Iterates through each instance, storing the difference between an 
-		  * instance's feature location and the centroid's feature location
-		  * in an array, differences[][]. Then, the method getClosest() returns
-		  * whichever centroid is closest, and that centroid is assigned the 
-		  * instance.
-		  *
-		 for (int i = 0; i < instances.length; i++){
-			 for(int j = 0; j < centroids.length; j++){
-				 for (int k = 0; k < centroids[j].length; k++){
-					 /*
-		  * Because it is a given that each instances[][] is as long
-		  * as centroids[][], we can use the same variable to
-		  * maneuver "horizontally" along each array.
-		  *
-					 differences[j][k] = centroids[j][k] - instances[i][k];
-					 System.out.print(differences[j][k]);
-				 }//end for
-				 System.out.println();
-			 }//end for
-			 int centroidAssignment = getClosest(differences);
-
-			 //Iterates through the assignments array, placing the assigned
-			 //instance in the first empty space of whatever row the centroid 
-			 //corresponds to.
-			 for (int l = 0; l < assignments[centroidAssignment].length; l++){
-				 if (assignments[centroidAssignment][l] == 0){
-					 assignments[centroidAssignment][l] = i;
-				 }//end if
-			 }//end for
-		 }//end for*/
-		 
-		 assignments = findOrphans(assignments, centroids, instances);
+		 //assignments = findOrphans(assignments, centroids, instances);
 		 centroids  = moveCentroids(centroids, assignments, instances);
 
 		 //Cleans assignments for future use
@@ -114,12 +73,14 @@ public class KMeans {
 	 private double[][] moveCentroids(double[][] centroids,
 			 int[][] assignments, double[][] instances){
 
+		 //Gets the center position of each cluster that each centroid should be 
+		 //moved to
 		 for (int i = 0; i < assignments.length; i ++){
 			 for (int j  = 0; j < assignments[i].length; j++){
-				 int instance = assignments[i][j];
-				 for (int k = 0; k < instances[instance].length; k ++){
-
-				 }
+				 // int instance = assignments[i][j];
+				 //for (int k = 0; k < instances[instance].length; k ++){
+				 //System.out.println(assignments[i][j]);
+				 // }
 			 }
 		 }
 
@@ -156,7 +117,7 @@ public class KMeans {
 				 min = totalDistance[i];
 			 }//end if
 		 }//end for
-		 System.out.println("Indicator " + indicator);
+		 //System.out.println("Indicator " + indicator);
 		 return indicator;
 	 }//end method
 
@@ -218,7 +179,7 @@ public class KMeans {
 				 }//end if
 
 				 //
-				 for (int j = 0; j < assignments[i].length; j ++){
+				 for (int j = 0; j < assignments[i].length-1; j ++){
 					 if (assignments[i][j] == instance){
 
 						 //checks to see if the reassigned instance is the last
