@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * A k-means clustering algorithm implementation.
  * 
@@ -7,15 +9,17 @@ public class KMeans {
 
 	//Distortion initially set to an arbitrary value.
 	private double distortion = 9999;
+	private double lastDistortion;
 
 	public KMeansResult cluster(double[][] centroids, double[][] instances,
 			double threshold) {
 
 		//changes the centroid location until the threshold is reached.
-		/*
+	
 		while(distortion > threshold){
+			System.out.println("hi");
 			centroids = assignCentroids(centroids,instances);
-		}*/
+		}
 		centroids = assignCentroids(centroids,instances);
 
 		return null;
@@ -47,7 +51,7 @@ public class KMeans {
 
 		 }
 
-		 //assignments = findOrphans(assignments, centroids, instances);
+		 assignments = findOrphans(assignments, centroids, instances);
 		 centroids  = moveCentroids(centroids, assignments, instances);
 
 		 //Cleans assignments for future use
@@ -65,20 +69,57 @@ public class KMeans {
 	  * distortion for all the centroid movements.
 	  */
 	 private double[][] moveCentroids(double[][] centroids,
-			 int[][] assignments, double[][] instances){
-
-		 //Gets the center position of each cluster that each centroid should be 
-		 //moved to
-		 for (int i = 0; i < assignments.length; i ++){
-			 for (int j  = 0; j < assignments[i].length; j++){
-				 int instance = assignments[i][j];
-				 for (int k = 0; k < instances[instance].length; k ++){
-				 System.out.println(assignments[i][j]);
+			 int assignments[][], double[][] instances){
+		 
+		 //lengths[] stores how many features are attached to a centroid
+		 int[] lengths = new int[centroids.length];
+		 for(int i = 0; i < assignments.length; i++){
+			 for(int j = 0; j < assignments[i].length; j++){
+				 if (assignments[i][j] != 0){
+					 lengths[i] = lengths[i]++;
 				 }
 			 }
 		 }
 
-		 return centroids;
+		 double[][] newFeaturePosition = new double[centroids.length]
+				 [instances[0].length];
+		 /*
+		  * Iterates through the assignments row first, which denotes centroids.
+		  * Then Iterates across the columns of each row, which indicate a feature
+		  * column. Then iterates through all the columns all the features of that
+		  * centroid have to get the sum of all the feature's lengths.
+		  */
+		 for (int i = 0; i < assignments.length; i ++){
+			 for (int j  = 0; j < assignments[i].length; j++){
+				 int instanceRow = assignments[i][j];
+				 for(int k = 0; k < instances[instanceRow].length; k++){
+					 newFeaturePosition[i][k] = newFeaturePosition[i][k] +
+							 instances[instanceRow][k];
+				 }
+			 }
+		 }
+		 
+		 //divides the sum of the distances to get the average.
+		 for(int i = 0; i < newFeaturePosition.length; i++){
+			 for (int j = 0; j < newFeaturePosition[i].length; j++){
+				 newFeaturePosition[i][j] = newFeaturePosition[i][j] / lengths[i];
+			 }
+		 }
+		 
+		 //finds the distortion
+		 if (distortion != 9999){
+			 lastDistortion = distortion;
+		 }
+		 
+		 for(int i = 0; i < centroids.length; i ++){
+			 for(int k = 0; k < centroids[i].length; k++){
+				 distortion = Math.abs(centroids[i][k] - newFeaturePosition[i][k]);
+			 }
+		 }
+		 if (lastDistortion != 0){
+			 distortion = (distortion - lastDistortion) / lastDistortion;
+		 }
+		 return newFeaturePosition;
 	 }
 
 	 /*
@@ -172,7 +213,7 @@ public class KMeans {
 				 }//end if
 
 				 //
-				 for (int j = 0; j < assignments[i].length-1; j ++){
+				 for (int j = 0; j < assignments[i].length; j ++){
 					 if (assignments[i][j] == instance){
 
 						 //checks to see if the reassigned instance is the last
