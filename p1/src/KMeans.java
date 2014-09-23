@@ -20,8 +20,7 @@ public class KMeans {
 			System.out.println("hi");
 			centroids = assignCentroids(centroids,instances);
 		}
-		centroids = assignCentroids(centroids,instances);
-
+		//centroids = assignCentroids(centroids, instances);
 		return null;
 	}
 
@@ -30,7 +29,7 @@ public class KMeans {
 	 * function
 	 */	private double[][] assignCentroids(double[][] centroids, 
 			 double[][] instances){
-
+		 System.out.println("assignCentroids");
 		 //Each row represents a centroid.
 		 //Each column represents a row in instances[][].
 		 int[][] assignments = new int[centroids.length][instances.length];
@@ -54,13 +53,6 @@ public class KMeans {
 		 assignments = findOrphans(assignments, centroids, instances);
 		 centroids  = moveCentroids(centroids, assignments, instances);
 
-		 //Cleans assignments for future use
-		 for(int i = 0; i < assignments.length; i++){
-			 for (int j = 0; j < assignments[i].length; j++){
-				 assignments[i][j] = 0;
-			 }
-		 }
-
 		 return centroids;
 	 }//end method
 
@@ -70,7 +62,7 @@ public class KMeans {
 	  */
 	 private double[][] moveCentroids(double[][] centroids,
 			 int assignments[][], double[][] instances){
-		 
+		 System.out.println("moveCentroids");
 		 //lengths[] stores how many features are attached to a centroid
 		 int[] lengths = new int[centroids.length];
 		 for(int i = 0; i < assignments.length; i++){
@@ -127,7 +119,7 @@ public class KMeans {
 	  * The centroid is indicated by its row.
 	  */
 	 private int getClosest(double[][] differences){
-
+		 System.out.println("getClosest");
 		 //Array to store the distances between each centroid and instance
 		 double[] totalDistance = new double[differences.length];
 
@@ -168,9 +160,8 @@ public class KMeans {
 		 double max = 0;
 		 int instance = 0;
 
-
 		 for (int i = 0; i < assignments.length; i ++){
-			 if (assignments[i][0] == 0){
+			 if (assignments[i][0] == 0 && assignments[i][1] == 0){
 				 hasOrphans = true;
 				 orphanedCentroid = i;
 			 }//end if 
